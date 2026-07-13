@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8">
+<title>Leanne 剪片素材庫</title>
+<style>
+:root{
+  --bg:#F7F4EE; --card:#FFFFFF; --ink:#26241F; --muted:#7A7468;
+  --accent:#E8552F; --accent-ink:#fff; --green:#2F5D50;
+  --line:#E5DFD3; --chip:#EFEAE0; --star:#E8A02F;
+  --shadow:0 1px 3px rgba(38,36,31,.08);
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#1D1B17; --card:#282520; --ink:#EDE8DE; --muted:#9A937F;
+    --accent:#F0663F; --green:#7FB8A4; --line:#3A362E; --chip:#333028;
+    --shadow:0 1px 3px rgba(0,0,0,.4); }
+}
+:root[data-theme="dark"]{ --bg:#1D1B17; --card:#282520; --ink:#EDE8DE; --muted:#9A937F;
+  --accent:#F0663F; --green:#7FB8A4; --line:#3A362E; --chip:#333028;
+  --shadow:0 1px 3px rgba(0,0,0,.4); }
+:root[data-theme="light"]{ --bg:#F7F4EE; --card:#FFFFFF; --ink:#26241F; --muted:#7A7468;
+  --accent:#E8552F; --green:#2F5D50; --line:#E5DFD3; --chip:#EFEAE0;
+  --shadow:0 1px 3px rgba(38,36,31,.08); }
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);
+  font-family:-apple-system,"PingFang TC","Microsoft JhengHei",sans-serif;
+  margin:0;line-height:1.6}
+.wrap{max-width:1000px;margin:0 auto;padding:0 20px 80px}
+
+header{padding:36px 0 8px}
+h1{font-size:1.7rem;margin:0;letter-spacing:.02em}
+h1 span{color:var(--accent)}
+.sub{color:var(--muted);margin:4px 0 0;font-size:.92rem}
+
+.toolbar{position:sticky;top:0;background:var(--bg);z-index:10;
+  padding:14px 0 12px;border-bottom:1px solid var(--line)}
+#search{width:100%;padding:11px 16px;font-size:1rem;border:1.5px solid var(--line);
+  border-radius:10px;background:var(--card);color:var(--ink)}
+#search:focus{outline:2px solid var(--accent);border-color:transparent}
+.tabs{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.tab{padding:6px 14px;border-radius:999px;border:1.5px solid var(--line);
+  background:var(--card);color:var(--ink);cursor:pointer;font-size:.9rem}
+.tab.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.tab:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+section{margin-top:34px}
+.sec-head{display:flex;align-items:baseline;gap:10px;margin-bottom:14px}
+h2{font-size:1.15rem;margin:0}
+.sec-note{color:var(--muted);font-size:.85rem}
+.count{color:var(--green);font-size:.8rem;font-weight:600}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;
+  padding:14px 16px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:6px;
+  position:relative}
+.card a.title{font-weight:700;color:var(--ink);text-decoration:none;font-size:1rem;
+  padding-right:28px;display:block}
+.card a.title:hover{color:var(--accent)}
+.card p{margin:0;color:var(--muted);font-size:.86rem}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
+.tag{background:var(--chip);border-radius:6px;padding:1px 8px;font-size:.75rem;color:var(--muted)}
+.fav{position:absolute;top:10px;right:10px;border:none;background:none;cursor:pointer;
+  font-size:1.1rem;color:var(--line);padding:4px;line-height:1}
+.fav.on{color:var(--star)}
+.badge{display:inline-block;background:var(--green);color:var(--bg);border-radius:6px;
+  padding:1px 8px;font-size:.72rem;font-weight:700;align-self:flex-start}
+
+.palettes{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.palette{background:var(--card);border:1px solid var(--line);border-radius:12px;
+  overflow:hidden;box-shadow:var(--shadow)}
+.palette .name{padding:10px 14px 2px;font-weight:700;font-size:.95rem}
+.palette .mood{padding:0 14px 10px;color:var(--muted);font-size:.82rem}
+.swatches{display:flex;height:74px}
+.sw{flex:1;border:none;cursor:pointer;position:relative;padding:0}
+.sw span{position:absolute;bottom:4px;left:50%;transform:translateX(-50%);
+  font-family:ui-monospace,Menlo,monospace;font-size:.62rem;color:#fff;
+  text-shadow:0 1px 2px rgba(0,0,0,.55);letter-spacing:.02em}
+.sw:hover{flex:1.6;transition:flex .15s}
+.toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(80px);
+  background:var(--ink);color:var(--bg);padding:10px 20px;border-radius:999px;
+  font-size:.9rem;transition:transform .25s;z-index:99}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.hidden{display:none!important}
+.empty{color:var(--muted);padding:30px 0;text-align:center}
+@media (prefers-reduced-motion: reduce){.sw:hover{transition:none}.toast{transition:none}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<header>
+  <h1>Leanne 嘅剪片<span>素材庫</span></h1>
+  <p class="sub">不露面 Vlog × CapCut 常用素材一站搵齊 · 全部免費 · ⭐ 撳星星收藏常用嘅，下次開頁自動記住</p>
+</header>
+
+<div class="toolbar">
+  <input id="search" type="search" placeholder="搜尋素材，例如：貓 meme、轉場音效、粉色…" aria-label="搜尋素材">
+  <div class="tabs" id="tabs">
+    <button class="tab on" data-cat="all">全部</button>
+    <button class="tab" data-cat="fav">⭐ 我的常用</button>
+    <button class="tab" data-cat="sfx">🔊 音效</button>
+    <button class="tab" data-cat="meme">🐱 Meme</button>
+    <button class="tab" data-cat="sticker">✨ Sticker／插圖</button>
+    <button class="tab" data-cat="color">🎨 色彩配搭</button>
+    <button class="tab" data-cat="mine">📌 我嘅網站</button>
+  </div>
+</div>
+
+<section data-sec="mine">
+  <div class="sec-head"><h2>📌 我嘅常用網站</h2></div>
+  <div class="grid" id="grid-mine"></div>
+</section>
+
+<section data-sec="sfx">
+  <div class="sec-head"><h2>🔊 音效</h2><span class="sec-note">全部可免費商用（個別要註明出處，見卡片）；下載 MP3 後直接入 CapCut</span></div>
+  <div class="grid" id="grid-sfx"></div>
+</section>
+
+<section data-sec="meme">
+  <div class="sec-head"><h2>🐱 Meme</h2><span class="sec-note">動物 meme、GIF、模板；長按／右鍵即可儲存</span></div>
+  <div class="grid" id="grid-meme"></div>
+</section>
+
+<section data-sec="sticker">
+  <div class="sec-head"><h2>✨ Sticker／插圖</h2></div>
+  <div class="grid" id="grid-sticker"></div>
+</section>
+
+<section data-sec="color">
+  <div class="sec-head"><h2>🎨 色彩配搭</h2><span class="sec-note">撳任何一格顏色，色碼會自動複製，貼入 CapCut 嘅自訂顏色就用得</span></div>
+  <div class="palettes" id="palettes"></div>
+  <div class="grid" id="grid-color" style="margin-top:14px"></div>
+</section>
+
+<p class="empty hidden" id="empty">搵唔到相關素材，試下其他關鍵字？</p>
+</div>
+<div class="toast" id="toast">已複製</div>
+
+<script>
+const SITES=[
+ {cat:"mine",name:"ilus.ai",url:"https://ilus.ai/",desc:"我常用嘅插圖網站",tags:["插圖","常用"],badge:"我的網站"},
+ {cat:"mine",name:"seukku.cc",url:"https://seukku.cc/",desc:"我常用嘅素材網站",tags:["素材","常用"],badge:"我的網站"},
+
+ {cat:"sfx",name:"效果音ラボ",url:"https://soundeffect-lab.info/",desc:"日本 vlog 界最愛：叮、咻、poka 等搞笑音效，全部免費免註冊",tags:["搞笑","日系","轉場","叮"]},
+ {cat:"sfx",name:"OtoLogic",url:"https://otologic.jp/free/se/","desc":"高質日系音效＋短 jingle，要註明出處（寫 OtoLogic 就得）",tags:["日系","jingle","轉場"]},
+ {cat:"sfx",name:"Pixabay 音效",url:"https://pixabay.com/sound-effects/",desc:"最大免費音效庫，免註明出處，直接搜英文關鍵字如 whoosh、pop",tags:["whoosh","pop","英文","大型"]},
+ {cat:"sfx",name:"Mixkit 音效",url:"https://mixkit.co/free-sound-effects/",desc:"精選高質音效，分類清晰易搵，免費商用",tags:["精選","轉場","通知"]},
+ {cat:"sfx",name:"MyInstants",url:"https://www.myinstants.com/",desc:"Meme 音效寶庫！Vine boom、bruh、貓叫全部有，撳一下即試聽",tags:["meme","搞笑","boom","bruh","即聽"]},
+ {cat:"sfx",name:"Freesound",url:"https://freesound.org/",desc:"社群上傳嘅環境聲、白噪音，適合 vlog 氣氛底聲（需免費註冊）",tags:["環境聲","白噪音","氣氛"]},
+ {cat:"sfx",name:"YouTube 音效庫",url:"https://studio.youtube.com/channel/UC/music",desc:"官方免費音樂＋音效，登入 YouTube 帳號就用到，唔驚版權",tags:["音樂","BGM","版權安全"]},
+
+ {cat:"meme",name:"Tenor（搜 cat meme）",url:"https://tenor.com/search/cat-meme-gifs",desc:"動物 meme GIF 最快搵：改搜尋字就有 dog、capybara、hamster",tags:["貓","GIF","動物","狗"]},
+ {cat:"meme",name:"GIPHY",url:"https://giphy.com/search/funny-animal",desc:"另一大 GIF 庫，reaction GIF 特別多",tags:["GIF","reaction","動物"]},
+ {cat:"meme",name:"Imgflip 模板庫",url:"https://imgflip.com/memetemplates",desc:"經典 meme 模板，可以直接喺網上加字再下載",tags:["模板","加字","經典"]},
+ {cat:"meme",name:"Know Your Meme",url:"https://knowyourmeme.com/",desc:"查 meme 出處同原圖，搵返高清版本必用",tags:["出處","高清","查典"]},
+ {cat:"meme",name:"Pinterest（搜 貓meme）",url:"https://www.pinterest.com/search/pins/?q=%E8%B2%93meme",desc:"中文圈流行嘅貓 meme 圖合集，質素高",tags:["貓","中文","合集"]},
+
+ {cat:"sticker",name:"いらすとや",url:"https://www.irasutoya.com/",desc:"日本國民級免費插圖，人物、動物、情境圖全部有，vlog 御用",tags:["日系","插圖","人物","動物"]},
+ {cat:"sticker",name:"Flaticon",url:"https://www.flaticon.com/",desc:"過百萬 icon 同 sticker，PNG 直接下載（免費版要註明出處）",tags:["icon","PNG"]},
+ {cat:"sticker",name:"OpenMoji",url:"https://openmoji.org/",desc:"開源 emoji 圖庫，PNG／SVG 任下載，完全免費",tags:["emoji","開源"]},
+ {cat:"sticker",name:"Icons8 插圖",url:"https://icons8.com/illustrations",desc:"風格化插圖，適合片頭片尾裝飾",tags:["插圖","片頭"]},
+
+ {cat:"color",name:"Color Hunt",url:"https://colorhunt.co/",desc:"每日更新嘅四色配搭合集，撳色即複製色碼",tags:["配色","靈感"]},
+ {cat:"color",name:"Coolors",url:"https://coolors.co/generate",desc:"撳空白鍵即刻生成新配色，可以鎖定鍾意嘅顏色",tags:["生成器","配色"]},
+ {cat:"color",name:"日本の伝統色",url:"https://nipponcolors.com/",desc:"日系傳統色庫，溫柔低飽和，啱晒治癒系 vlog",tags:["日系","低飽和","治癒"]},
+];
+
+const PALETTES=[
+ {name:"奶茶日常",mood:"溫柔米棕系 · 治癒 vlog 開場字卡",colors:["#D7C0AE","#EEE3CB","#967E76","#B7C4CF","#5C5248"]},
+ {name:"貓咪奶油",mood:"暖黃奶油 · 配動物 meme 最襯",colors:["#FFF2CC","#FFD966","#F4B183","#C55A11","#7F6000"]},
+ {name:"清晨霧藍",mood:"冷靜藍灰 · 學習／工作日 vlog",colors:["#DDE6ED","#9DB2BF","#526D82","#27374D","#F6F4EB"]},
+ {name:"抹茶散步",mood:"綠色系 · 戶外、咖啡店片段",colors:["#E8F3D6","#B5C99A","#862B0D","#4F6F52","#FCF9BE"]},
+ {name:"落日濾鏡",mood:"橙粉漸層 · 黃昏、旅行片尾",colors:["#FFF6E9","#FFB07F","#F55050","#943855","#3C2A21"]},
+ {name:"復古菲林",mood:"低飽和復古 · 字幕底色好用",colors:["#F1DEC9","#C8B6A6","#A4907C","#8D7B68","#3F3B33"]},
+];
+
+const favs=new Set(JSON.parse(localStorage.getItem("favs")||"[]"));
+function saveFavs(){localStorage.setItem("favs",JSON.stringify([...favs]))}
+
+function makeCard(s){
+ const id=s.name;
+ const el=document.createElement("div");el.className="card";el.dataset.cat=s.cat;
+ el.dataset.text=(s.name+" "+s.desc+" "+s.tags.join(" ")).toLowerCase();
+ el.innerHTML=(s.badge?`<span class="badge">${s.badge}</span>`:"")+
+  `<a class="title" href="${s.url}" target="_blank" rel="noopener">${s.name} ↗</a>
+   <p>${s.desc}</p>
+   <div class="tags">${s.tags.map(t=>`<span class="tag">${t}</span>`).join("")}</div>
+   <button class="fav${favs.has(id)?" on":""}" aria-label="收藏 ${s.name}">★</button>`;
+ el.querySelector(".fav").onclick=e=>{
+   e.target.classList.toggle("on");
+   favs.has(id)?favs.delete(id):favs.add(id);saveFavs();applyFilter();};
+ return el;
+}
+SITES.forEach(s=>document.getElementById("grid-"+s.cat).appendChild(makeCard(s)));
+
+const palWrap=document.getElementById("palettes");
+PALETTES.forEach(p=>{
+ const d=document.createElement("div");d.className="palette";
+ d.dataset.text=(p.name+" "+p.mood).toLowerCase();
+ d.innerHTML=`<div class="swatches">${p.colors.map(c=>
+   `<button class="sw" style="background:${c}" aria-label="複製 ${c}"><span>${c}</span></button>`).join("")}</div>
+  <div class="name">${p.name}</div><div class="mood">${p.mood}</div>`;
+ d.querySelectorAll(".sw").forEach((b,i)=>b.onclick=()=>copy(p.colors[i]));
+ palWrap.appendChild(d);
+});
+
+const toast=document.getElementById("toast");let tt;
+function copy(c){navigator.clipboard.writeText(c).then(()=>{
+ toast.textContent="已複製 "+c+"，貼入 CapCut 自訂顏色即可";
+ toast.classList.add("show");clearTimeout(tt);tt=setTimeout(()=>toast.classList.remove("show"),1800);});}
+
+let cat="all";
+document.getElementById("tabs").addEventListener("click",e=>{
+ if(!e.target.dataset.cat)return;
+ document.querySelectorAll(".tab").forEach(t=>t.classList.remove("on"));
+ e.target.classList.add("on");cat=e.target.dataset.cat;applyFilter();});
+document.getElementById("search").addEventListener("input",applyFilter);
+
+function applyFilter(){
+ const q=document.getElementById("search").value.trim().toLowerCase();
+ let visible=0;
+ document.querySelectorAll(".card").forEach(c=>{
+   const name=c.querySelector(".title").textContent.replace(" ↗","");
+   const okCat=cat==="all"||c.dataset.cat===cat||(cat==="fav"&&favs.has(name));
+   const okQ=!q||c.dataset.text.includes(q);
+   c.classList.toggle("hidden",!(okCat&&okQ));if(okCat&&okQ)visible++;});
+ document.querySelectorAll(".palette").forEach(p=>{
+   const ok=(cat==="all"||cat==="color")&&(!q||p.dataset.text.includes(q));
+   p.classList.toggle("hidden",!ok);if(ok)visible++;});
+ document.querySelectorAll("section").forEach(s=>{
+   const any=s.querySelectorAll(".card:not(.hidden),.palette:not(.hidden)").length>0;
+   s.classList.toggle("hidden",!any);});
+ document.getElementById("empty").classList.toggle("hidden",visible>0);
+}
+applyFilter();
+</script>
+</body>
+</html>
